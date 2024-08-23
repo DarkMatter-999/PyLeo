@@ -2,7 +2,7 @@ import schedule
 import time
 from PyQt6.QtCore import Qt, QTimer, QTime
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton
-from PyQt6.QtGui import QKeySequence, QShortcut, QFont
+from PyQt6.QtGui import QKeySequence, QShortcut, QFont, QPixmap
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -18,12 +18,25 @@ class MainWindow(QMainWindow):
         # self.setWindowOpacity(0.8)
         self.setStyleSheet("QWidget {background-color: rgba(34,14,59,200);}")
 
+        self.mainWidget = QWidget(self)
+        self.setCentralWidget(self.mainWidget)
+        self.layout = QVBoxLayout(self.mainWidget)
+        self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.imageLabel = QLabel(self)
+        pixmap = QPixmap("./assets/pyleo2.png")
+        resized_pixmap = pixmap.scaled(200, 200, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        self.imageLabel.setPixmap(resized_pixmap)
+        self.imageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.layout.addWidget(self.imageLabel)
+
         self.label = QLabel(self)
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.label.setGeometry(0, 0, 400, 200)
         font = self.label.font()
         font.setPointSize(24)
         self.label.setFont(font)
+        self.layout.addWidget(self.label)
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateTimer)
@@ -65,6 +78,13 @@ class FullWindow(QMainWindow):
         self.setCentralWidget(self.mainWidget)
         self.layout = QVBoxLayout(self.mainWidget)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.imageLabel = QLabel(self)
+        pixmap = QPixmap("./assets/pyleo1.png")
+        resized_pixmap = pixmap.scaled(200, 200, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
+        self.imageLabel.setPixmap(resized_pixmap)
+        self.imageLabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.layout.addWidget(self.imageLabel)
 
         self.label = QLabel(self)
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -116,8 +136,8 @@ def fullWindow():
 
 if __name__ == "__main__":
 
-    # schedule.every(1).seconds.do(mainWindow)
-    schedule.every(1).seconds.do(fullWindow)
+    schedule.every(15).minutes.do(mainWindow)
+    schedule.every(50).minutes.do(fullWindow)
 
     while True:
         schedule.run_pending()
