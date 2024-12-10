@@ -15,7 +15,7 @@ class MainWindow(QMainWindow):
         self.resize(400, 200)
         self.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
-        self.setStyleSheet("QWidget {background-color: rgba(34,14,59,200);}")
+        self.setStyleSheet("QWidget {background-color: rgba(" + Config.get("COLOR") +");}")
 
         self.mainWidget = QWidget(self)
         self.setCentralWidget(self.mainWidget)
@@ -40,7 +40,7 @@ class MainWindow(QMainWindow):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateTimer)
 
-        self.countdown = SHORT_BREAK_DURATION * 60
+        self.countdown = Config.get("SHORT_BREAK_DURATION") * 60
         self.updateTimer()
         self.timer.start(1000)  # Update every second
 
@@ -53,11 +53,14 @@ class MainWindow(QMainWindow):
         if self.countdown < 0:
             self.timer.stop()
             self.close()
+            self.countdown = Config.get("SHORT_BREAK_DURATION") * 60
+            self.timer.start(1000)
 
     def mousePressEvent(self, e):
         if e.button() == Qt.MouseButton.RightButton:
             self.close()
-
+            self.countdown = Config.get("SHORT_BREAK_DURATION") * 60
+            self.timer.start(1000)
 
 class FullWindow(QMainWindow):
     def __init__(self):
@@ -70,7 +73,7 @@ class FullWindow(QMainWindow):
         self.showMaximized()
         self.setWindowFlags(Qt.WindowType.WindowStaysOnTopHint | Qt.WindowType.FramelessWindowHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground, True)
-        self.setStyleSheet("QWidget {background-color: rgba(34,14,59,100);}")
+        self.setStyleSheet("QWidget {background-color: rgba(" + Config.get("COLOR") +");}")
 
         self.mainWidget = QWidget(self)
         self.setCentralWidget(self.mainWidget)
@@ -99,7 +102,7 @@ class FullWindow(QMainWindow):
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.updateTimer)
 
-        self.countdown = LONG_BREAK_DURATION * 60
+        self.countdown = Config.get("LONG_BREAK_DURATION") * 60
         self.updateTimer()
         self.timer.start(1000)
 
@@ -113,9 +116,14 @@ class FullWindow(QMainWindow):
         if self.countdown < 0:
             self.timer.stop()
             self.close()
+            self.countdown = Config.get("LONG_BREAK_DURATION") * 60
+            self.timer.start(1000)
 
     def mousePressEvent(self, e):
         if e.button() == Qt.MouseButton.RightButton:
             self.close()
+            self.countdown = Config.get("LONG_BREAK_DURATION") * 60
+            self.timer.start(1000)
+
 
 

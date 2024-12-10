@@ -26,14 +26,13 @@ class PyLeoApp:
         self._main_window = None
         self._full_window = None
 
-        BREAK_INTERVAL = 5
         self._short_timer = QTimer(self._app)
         self._short_timer.timeout.connect(self.schedule_next_break)
-        self._short_timer.start(BREAK_INTERVAL * 1000)
+        self._short_timer.start(Config.get("SHORT_BREAK") * 1000)
 
         self._long_timer = QTimer(self._app)
         self._long_timer.timeout.connect(self.schedule_next_long_break)
-        self._long_timer.start(15 * 1000)
+        self._long_timer.start(Config.get("LONG_BREAK") * 1000)
 
 
     def run(self):
@@ -63,6 +62,8 @@ class PyLeoApp:
         self.on_start_long_break_click(self)
 
 if __name__ == '__main__':
+    config = Config()
+
     app = PyLeoApp()
     app.run()
 
