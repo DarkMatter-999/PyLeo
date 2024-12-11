@@ -8,6 +8,7 @@ from PyQt6.QtGui import QIcon, QAction
 from config import *
 from breaks import *
 from tray import SystemTrayIcon
+from settings import ConfigWindow 
 
 class PyLeoApp:
     def __init__(self):
@@ -22,17 +23,19 @@ class PyLeoApp:
 
         self._icon.event_start_break_click = self.on_start_break_click
         self._icon.event_start_long_break_click = self.on_start_long_break_click
+        self._icon.event_start_settings = self.on_settings_click
 
         self._main_window = None
         self._full_window = None
+        self._settings_window = None
 
         self._short_timer = QTimer(self._app)
         self._short_timer.timeout.connect(self.schedule_next_break)
-        self._short_timer.start(Config.get("SHORT_BREAK") * 1000)
+        self._short_timer.start(Config.get("SHORT_BREAK") * 60 * 1000)
 
         self._long_timer = QTimer(self._app)
         self._long_timer.timeout.connect(self.schedule_next_long_break)
-        self._long_timer.start(Config.get("LONG_BREAK") * 1000)
+        self._long_timer.start(Config.get("LONG_BREAK") * 60 * 1000)
 
 
     def run(self):
@@ -60,6 +63,11 @@ class PyLeoApp:
 
     def schedule_next_long_break(self):
         self.on_start_long_break_click(self)
+
+    def on_settings_click(self):
+        if self._settings_window is None:
+            self._settings_window = ConfigWindow()
+        self._settings_window.show()
 
 if __name__ == '__main__':
     config = Config()

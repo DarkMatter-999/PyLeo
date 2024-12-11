@@ -38,7 +38,7 @@ def load_config():
                 "COLOR": "34,14,59,200",
             }
 
-            json.dump(default_config, file)
+            json.dump(default_config, file, indent=4)
             print(f"Config file not found at '{config_file}' creating a new one.")
 
             return default_config
@@ -46,6 +46,16 @@ def load_config():
         # raise Exception(f"Config file '{config_file}' not found.")
     except json.JSONDecodeError:
         raise Exception(f"Error parsing the config file '{config_file}'.")
+
+def save_config(config):
+    config_file = get_config_file_path()
+
+    try:
+        with open(config_file, 'w') as file:
+            json.dump(config, file, indent=4)
+
+    except Exception as e:
+        raise Exception(f"Error saving settings", e)
 
 class Config:
     config = None
@@ -56,8 +66,9 @@ class Config:
     def get(key):
         return Config.config[key]
 
-SHORT_BREAK = 15
-SHORT_BREAK_DURATION = 0.5
+    def set(key, value):
+        Config.config[key] = value
 
-LONG_BREAK = 50
-LONG_BREAK_DURATION = 5
+    def save():
+        save_config(Config.config)
+

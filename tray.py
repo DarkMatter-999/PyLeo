@@ -10,6 +10,7 @@ class SystemTrayIcon(QSystemTrayIcon):
         self.event_play_click = None
         self.event_pause_click = None
         self.event_exit_click = None
+        self.event_start_settings = None
 
         menu = QMenu(parent)
 
@@ -20,6 +21,10 @@ class SystemTrayIcon(QSystemTrayIcon):
         self._start_long_break_action = QAction("Start Long break", parent)
         self._start_long_break_action.triggered.connect(self.on_start_long_break_click)
         menu.addAction(self._start_long_break_action)
+
+        self._settings_action = QAction("Settings", parent)
+        self._settings_action.triggered.connect(self.on_settings_click)
+        menu.addAction(self._settings_action)
 
         self._exit_action = QAction("Exit", parent)
         self._exit_action.triggered.connect(self.on_exit_click)
@@ -43,6 +48,13 @@ class SystemTrayIcon(QSystemTrayIcon):
     def fire_long_break_click(self):
         if self.event_start_long_break_click:
             self.event_start_long_break_click(self)
+
+    def on_settings_click(self):
+        self.fire_settings_click()
+
+    def fire_settings_click(self):
+        if self.event_start_settings:
+            self.event_start_settings()
 
     def on_exit_click(self):
         self.fire_exit_click()

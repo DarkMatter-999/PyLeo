@@ -110,7 +110,7 @@ class FullWindow(QMainWindow):
         shortcut.activated.connect(self.close)
 
     def updateTimer(self):
-        time_left = QTime(0, 0, 0).addSecs(self.countdown)
+        time_left = QTime(0, 0, 0).addSecs(int(self.countdown))
         self.label.setText(f"Time left: {time_left.toString('hh:mm:ss')}")
         self.countdown -= 1
         if self.countdown < 0:
