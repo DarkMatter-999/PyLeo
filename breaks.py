@@ -1,5 +1,6 @@
 from config import *
-
+import random
+from exercises import exercises
 from PyQt6.QtCore import Qt, QTimer, QTime
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton
 from PyQt6.QtGui import QKeySequence, QShortcut, QFont, QPixmap
@@ -21,6 +22,17 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.mainWidget)
         self.layout = QVBoxLayout(self.mainWidget)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.toplabel = QLabel(self)
+        self.toplabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.toplabel.setWordWrap(True)
+        self.toplabel.setGeometry(0, 0, 400, 200)
+        font = self.toplabel.font()
+        font.setPointSize(14)
+        self.toplabel.setFont(font)
+        self.layout.addWidget(self.toplabel)
+
+        self.toplabel.setText(random.choice(exercises)[0])
 
         self.imageLabel = QLabel(self)
         pixmap = QPixmap("./assets/pyleo2.png")
@@ -56,11 +68,15 @@ class MainWindow(QMainWindow):
             self.countdown = Config.get("SHORT_BREAK_DURATION") * 60
             self.timer.start(1000)
 
+            self.toplabel.setText(random.choice(exercises)[0])
+
     def mousePressEvent(self, e):
         if e.button() == Qt.MouseButton.RightButton:
             self.close()
             self.countdown = Config.get("SHORT_BREAK_DURATION") * 60
             self.timer.start(1000)
+            
+            self.toplabel.setText(random.choice(exercises)[0])
 
 class FullWindow(QMainWindow):
     def __init__(self):
@@ -80,6 +96,17 @@ class FullWindow(QMainWindow):
         self.layout = QVBoxLayout(self.mainWidget)
         self.layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
+        self.toplabel = QLabel(self)
+        self.toplabel.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.toplabel.setWordWrap(True)
+        self.toplabel.setGeometry(0, 0, 600, 200)
+        font = self.toplabel.font()
+        font.setPointSize(14)
+        self.toplabel.setFont(font)
+        self.layout.addWidget(self.toplabel)
+
+        self.toplabel.setText(random.choice(exercises)[0])
+
         self.imageLabel = QLabel(self)
         pixmap = QPixmap("./assets/pyleo1.png")
         resized_pixmap = pixmap.scaled(200, 200, Qt.AspectRatioMode.KeepAspectRatio, Qt.TransformationMode.SmoothTransformation)
@@ -96,7 +123,7 @@ class FullWindow(QMainWindow):
 
         self.skipButton = QPushButton("Skip Timer", self)
         self.skipButton.setFont(QFont("Any", 24))
-        self.skipButton.clicked.connect(self.close)
+        self.skipButton.clicked.connect(self.click_skipButton)
         self.layout.addWidget(self.skipButton)
 
         self.timer = QTimer(self)
@@ -107,7 +134,7 @@ class FullWindow(QMainWindow):
         self.timer.start(1000)
 
         shortcut = QShortcut(QKeySequence(Qt.Key.Key_Escape), self)
-        shortcut.activated.connect(self.close)
+        shortcut.activated.connect(self.click_skipButton)
 
     def updateTimer(self):
         time_left = QTime(0, 0, 0).addSecs(int(self.countdown))
@@ -119,11 +146,21 @@ class FullWindow(QMainWindow):
             self.countdown = Config.get("LONG_BREAK_DURATION") * 60
             self.timer.start(1000)
 
+            self.toplabel.setText(random.choice(exercises)[0])
+
     def mousePressEvent(self, e):
         if e.button() == Qt.MouseButton.RightButton:
             self.close()
             self.countdown = Config.get("LONG_BREAK_DURATION") * 60
             self.timer.start(1000)
 
+            self.toplabel.setText(random.choice(exercises)[0])
+
+    def click_skipButton(self):
+        self.countdown = Config.get("LONG_BREAK_DURATION") * 60
+        self.timer.start(1000)
+
+        self.toplabel.setText(random.choice(exercises)[0])
+        self.close()
 
 
