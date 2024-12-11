@@ -1,0 +1,9 @@
+pillow==11.0.0
+pyasn1==0.6.1
+PyQt6==6.7.1
+PyQt6-Qt6==6.7.2
+PyQt6_sip==13.8.0
+python-xlib==0.33
+rsa==4.9
+schedule==1.2.2
+six==1.17.0
