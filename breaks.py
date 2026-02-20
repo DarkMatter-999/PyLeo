@@ -1,11 +1,13 @@
 from config import *
 import random
 from exercises import exercises
-from PyQt6.QtCore import Qt, QTimer, QTime
+from PyQt6.QtCore import Qt, QTimer, QTime, pyqtSignal
 from PyQt6.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWidget, QPushButton
 from PyQt6.QtGui import QKeySequence, QShortcut, QFont, QPixmap
 
 class MainWindow(QMainWindow):
+    break_finished = pyqtSignal()
+
     def __init__(self):
         super().__init__()
 
@@ -57,28 +59,27 @@ class MainWindow(QMainWindow):
         self.timer.start(1000)  # Update every second
 
         shortcut = QShortcut(QKeySequence(Qt.Key.Key_Escape), self)
-        shortcut.activated.connect(self.close)
+        shortcut.activated.connect(self.close_window)
 
     def updateTimer(self):
-        self.label.setText(f"Time left: {self.countdown}")
+        time_left = QTime(0, 0, 0).addSecs(int(self.countdown))
+        self.label.setText(f"Time left: {time_left.toString('mm:ss')}")
         self.countdown -= 1
         if self.countdown < 0:
             self.timer.stop()
-            self.close()
-            self.countdown = Config.get("SHORT_BREAK_DURATION") * 60
-            self.timer.start(1000)
-
-            self.toplabel.setText(random.choice(exercises)[0])
+            self.close_window()
 
     def mousePressEvent(self, e):
         if e.button() == Qt.MouseButton.RightButton:
-            self.close()
-            self.countdown = Config.get("SHORT_BREAK_DURATION") * 60
-            self.timer.start(1000)
-            
-            self.toplabel.setText(random.choice(exercises)[0])
+            self.close_window()
+
+    def close_window(self):
+        self.break_finished.emit()
+        self.deleteLater()
 
 class FullWindow(QMainWindow):
+    break_finished = pyqtSignal()
+
     def __init__(self):
         super().__init__()
 
@@ -123,7 +124,7 @@ class FullWindow(QMainWindow):
 
         self.skipButton = QPushButton("Skip Timer", self)
         self.skipButton.setFont(QFont("Any", 24))
-        self.skipButton.clicked.connect(self.click_skipButton)
+        self.skipButton.clicked.connect(self.close_window)
         self.layout.addWidget(self.skipButton)
 
         self.timer = QTimer(self)
@@ -134,7 +135,7 @@ class FullWindow(QMainWindow):
         self.timer.start(1000)
 
         shortcut = QShortcut(QKeySequence(Qt.Key.Key_Escape), self)
-        shortcut.activated.connect(self.click_skipButton)
+        shortcut.activated.connect(self.close_window)
 
     def updateTimer(self):
         time_left = QTime(0, 0, 0).addSecs(int(self.countdown))
@@ -142,25 +143,15 @@ class FullWindow(QMainWindow):
         self.countdown -= 1
         if self.countdown < 0:
             self.timer.stop()
-            self.close()
-            self.countdown = Config.get("LONG_BREAK_DURATION") * 60
-            self.timer.start(1000)
-
-            self.toplabel.setText(random.choice(exercises)[0])
+            self.close_window()
 
     def mousePressEvent(self, e):
         if e.button() == Qt.MouseButton.RightButton:
-            self.close()
-            self.countdown = Config.get("LONG_BREAK_DURATION") * 60
-            self.timer.start(1000)
+            self.close_window()
 
-            self.toplabel.setText(random.choice(exercises)[0])
+    def close_window(self):
+        self.break_finished.emit()
+        self.deleteLater()
 
-    def click_skipButton(self):
-        self.countdown = Config.get("LONG_BREAK_DURATION") * 60
-        self.timer.start(1000)
-
-        self.toplabel.setText(random.choice(exercises)[0])
-        self.close()
 
 
